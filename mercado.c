@@ -107,33 +107,33 @@ void cadastrarProduto() {
 }
 
 void listarProdutos() {
-	if(contador_produto > 0){
+	if (contador_produto > 0) {
 		printf("Listagem de produtos.\n");
 		printf("---------------------\n");
-		for(int i=0; i<contador_produto; i++){
+		for (int i = 0; i < contador_produto; i++) {
 			infoProduto(produtos[i]);
-		printf("---------------------\n");
-		sleep(1);
+			printf("---------------------\n");
+			sleep(1);
 		}
 
-	}else{
+	} else {
 		printf("Ainda não há produtos cadastrados!/n");
 	}
 
 }
 
 void visualizarCarrinho() {
-	if(contador_carrinho>0){
+	if (contador_carrinho > 0) {
 		printf("Produtos co carrinho!\n");
 		printf("----------------------\n");
-		for(int i=0; i< contador_carrinho; i++){
+		for (int i = 0; i < contador_carrinho; i++) {
 			infoProduto(carrinho[i].produto);
 			printf("Quantidade: %d\n", carrinho[i].quantidade);
 			printf("------------------------\n");
 			sleep(1);
 		}
 
-	}else{
+	} else {
 		printf("Ainda não há produtos no carrinho!\n");
 	}
 
@@ -145,8 +145,8 @@ void comprarProduto() {
 
 Produto pegarProdutoPorCodigo(int codigo) {
 	Produto p;
-	for(int i =0; i<contador_produto; i++){
-		if(produtos[i].codigo == codigo){
+	for (int i = 0; i < contador_produto; i++) {
+		if (produtos[i].codigo == codigo) {
 			p = produtos[i];
 		}
 	}
@@ -154,10 +154,43 @@ Produto pegarProdutoPorCodigo(int codigo) {
 }
 
 int* temNoCarrinho(int codigo) {
-
+	int static retorno[] = { 0, 0 };
+	for (int i = 0; i < contador_carrinho; i++) {
+		if (carrinho[i].produto.codigo == codigo) {
+			retorno[0] = 1; //tem o produto com esse codigo no carrinho
+			retorno[1] = i; // o indice doproduto no carrinho
+		}
+	}
+	return retorno;
 }
 
 void fecharPedido() {
+	if (contador_carrinho > 0) {
+		float valorTotal = 0.0;
+		printf("Produtos do carrinho:\n");
+		printf("---------------------------\n");
+		for (int i = 0; i < contador_carrinho; i++) {
+			Produto p = carrinho[i].produto;
+			int quantidade = carrinho[i].quantidade;
+			valorTotal += p.preco * quantidade;
+			infoProduto(p);
+			printf("Quantidade: %d\n", quantidade);
+			printf("------------------------------\n");
+			sleep(1);
+		}
+		printf("Sua fatura é R$ %.2f\n", valorTotal);
+
+		//limpar carrinho
+		contador_carrinho =0;
+		printf("Obrigado pela preferência!\n");
+		sleep(5);
+		menu();
+
+	} else {
+		printf("Seu carrinho está vazio!\n");
+		sleep(3);
+		menu();
+	}
 
 }
 
