@@ -55,7 +55,7 @@ void menu() {
 	printf("6 - Sair do sistema\n");
 
 	int opcao;
-	scanf("%d", opcao);
+	scanf("%d", &opcao);
 	getchar();
 
 	switch (opcao) {
@@ -140,6 +140,69 @@ void visualizarCarrinho() {
 }
 
 void comprarProduto() {
+	if (contador_produto > 0) {
+		printf(
+				"Informe o código do produdo que deseja adicionar ao carrinho:\n");
+
+		printf("============= Produtos Disponíveis ===========\n");
+		for (int i = 0; i < contador_produto; i++) {
+			infoProduto(produtos[i]);
+			printf("--------------------------\n");
+			sleep(1);
+		}
+		int codigo;
+		scanf("%d", &codigo);
+		getchar();
+
+		int tem_mercado = 0;
+		for (int i = 0; i < contador_produto; i++) {
+			if (produtos[i].codigo == codigo) {
+				tem_mercado = 1;
+
+				if (contador_carrinho > 0) {
+					int *retorno = temNoCarrinho(codigo);
+
+					if (retorno[0] == 1) {
+						carrinho[retorno[1]].quantidade++;
+						printf(
+								"Produto %s já existe no carrinho! Adicionado com sucesso.\n",
+								strtok(carrinho[retorno[1]].produto.nome,
+										"\n"));
+						sleep(2);
+						menu();
+					} else {
+						Produto p = pegarProdutoPorCodigo(codigo);
+						carrinho[contador_carrinho].produto = p;
+						carrinho[contador_carrinho].quantidade = 1;
+						contador_carrinho++;
+						printf("O produto %s foi adicionado ao carrinho.\n",
+								strtok(p.nome, "\n"));
+						sleep(2);
+						menu();
+					}
+				} else {
+					Produto p = pegarProdutoPorCodigo(codigo);
+					carrinho[contador_carrinho].produto = p;
+					carrinho[contador_carrinho].quantidade = 1;
+					contador_carrinho++;
+					printf("O produto %s foi adicionado ao carrinho.\n",
+							strtok(p.nome, "\n"));
+					sleep(2);
+					menu();
+				}
+			}
+		}
+		if (tem_mercado < 1) {
+			printf("Produto com código %s não encontrado!\n", codigo);
+			sleep(2);
+			menu();
+		}
+
+	} else {
+		printf("Nenhum produto cadastrado!\n");
+		sleep(2);
+		menu();
+	}
 
 }
 
@@ -181,7 +244,7 @@ void fecharPedido() {
 		printf("Sua fatura é R$ %.2f\n", valorTotal);
 
 		//limpar carrinho
-		contador_carrinho =0;
+		contador_carrinho = 0;
 		printf("Obrigado pela preferência!\n");
 		sleep(5);
 		menu();
